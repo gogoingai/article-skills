@@ -1,2 +1,4 @@
 *.skill
+*.zip
 .vscode/*
+*DS_Store
