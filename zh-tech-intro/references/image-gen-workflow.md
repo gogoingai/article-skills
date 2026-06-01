@@ -17,17 +17,18 @@
 bash scripts/gen-image.sh --check
 ```
 
-脚本自动检测三样东西，缺失时给出安装指引：
+脚本自动检测四样东西，缺失时给出安装指引：
 
 | 工具 | 作用 | 缺失时 |
 |------|------|--------|
 | `codex` CLI | 驱动 GPT Image 2 | 打印安装命令，需用户手动操作 |
 | `gpt-image-2` skill | 图片生成脚本 | `npx skills add https://github.com/agentspace-so/agent-skills --skill gpt-image-2` |
 | `picgo` | 上传图床获取 URL | **自动尝试安装**；失败则降级本地路径 |
+| picgo 图床配置 | 指定上传目标 | 见下方说明 |
 
 输出 `STATUS: ready` 后继续；否则按提示完成配置后重新运行 `--check`。
 
-> **picgo 图床配置（一次性）**：`picgo set uploader`。推荐新手用 SM.MS（免费）：注册 https://smms.app 获取 Token，填入即可。配置后 `picgo upload 任意图片.png` 验证，看到 `https://` 开头的 URL 说明成功。
+> **picgo 图床配置**：脚本检测到本机 PicGo GUI 应用（`~/Library/Application Support/picgo/data.json`）时，自动将其当前默认图床同步到 CLI 配置，无需手动操作。没有 GUI 应用时，运行 `picgo set uploader` 按提示填写图床信息；配置后 `picgo upload 任意图片.png` 验证，看到 `https://` 开头的 URL 说明成功。
 
 ---
 

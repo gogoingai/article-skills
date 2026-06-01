@@ -47,9 +47,13 @@ done
 # ── 工具查找 ───────────────────────────────────────────────────────────────────
 
 find_codex() {
-  command -v codex 2>/dev/null \
-    || [[ -x /opt/homebrew/bin/codex ]] && echo /opt/homebrew/bin/codex \
-    || true
+  local p
+  p=$(command -v codex 2>/dev/null || true)
+  if [[ -n "$p" ]]; then
+    echo "$p"
+  elif [[ -x /opt/homebrew/bin/codex ]]; then
+    echo /opt/homebrew/bin/codex
+  fi
 }
 
 find_gen_sh() {
@@ -107,6 +111,52 @@ import json
 d = json.load(open('$HOME/.picgo/config.json'))
 print(d.get('picBed', {}).get('uploader', '未知'))
 " 2>/dev/null || echo "未知"
+}
+
+# ── 从 PicGo GUI 同步图床配置 ─────────────────────────────────────────────────
+# 读取 GUI 的 data.json，将当前默认图床配置写入 CLI 的 config.json
+# 成功时输出图床名（如 tcyun），失败时退出码非零
+sync_from_gui() {
+  python3 << 'PYEOF'
+import json, os, sys
+
+gui_path = os.path.expanduser("~/Library/Application Support/picgo/data.json")
+cli_path = os.path.expanduser("~/.picgo/config.json")
+
+if not os.path.exists(gui_path):
+    sys.exit(1)
+
+with open(gui_path) as f:
+    gui = json.load(f)
+
+uploader = gui.get("picBed", {}).get("current") or gui.get("picBed", {}).get("uploader")
+if not uploader:
+    sys.exit(1)
+
+uploader_cfg = gui.get("picBed", {}).get(uploader)
+if not uploader_cfg:
+    sys.exit(1)
+
+cli = {}
+if os.path.exists(cli_path):
+    try:
+        with open(cli_path) as f:
+            cli = json.load(f)
+    except Exception:
+        cli = {}
+
+cli.setdefault("picBed", {})
+cli["picBed"]["uploader"] = uploader
+cli["picBed"]["current"] = uploader
+cli["picBed"][uploader] = uploader_cfg
+cli.setdefault("picgoPlugins", {})
+
+os.makedirs(os.path.dirname(cli_path), exist_ok=True)
+with open(cli_path, "w") as f:
+    json.dump(cli, f, indent=2, ensure_ascii=False)
+
+print(uploader)
+PYEOF
 }
 
 # ── 自动安装 picgo ─────────────────────────────────────────────────────────────
@@ -170,7 +220,7 @@ run_check() {
   local codex_bin; codex_bin=$(find_codex)
   if [[ -n "$codex_bin" ]]; then
     local ver; ver=$("$codex_bin" --version 2>/dev/null | head -1 || echo "version unknown")
-    ok "codex CLI 已安装：$codex_bin（$ver）"
+    ok "codex CLI 已安装：${codex_bin}（${ver}）"
   else
     all_ok=false
     err "codex CLI 未安装"
@@ -229,7 +279,19 @@ run_check() {
   # ── 4. picgo 图床配置 ──
   if [[ -n "$(find_picgo)" ]]; then
     step "检测 picgo 图床配置"
-    if picgo_configured; then
+    local gui_cfg="$HOME/Library/Application Support/picgo/data.json"
+    if [[ -f "$gui_cfg" ]]; then
+      # GUI 配置优先：自动同步到 CLI
+      local synced; synced=$(sync_from_gui 2>/dev/null || true)
+      if [[ -n "$synced" ]]; then
+        ok "图床已就绪（${synced}，同步自 PicGo GUI）"
+      else
+        all_ok=false
+        warn "发现 PicGo GUI 配置，但同步失败，请手动配置"
+        echo ""
+        echo "   picgo set uploader"
+      fi
+    elif picgo_configured; then
       ok "图床已配置（$(get_uploader_name)）"
     else
       all_ok=false
@@ -237,17 +299,6 @@ run_check() {
       echo ""
       echo "   运行以下命令，按提示选择并填写图床信息："
       echo "   picgo set uploader"
-      echo ""
-      echo "   常用图床及所需信息："
-      echo "   ┌─ SM.MS（免费，推荐新手）"
-      echo "   │   注册：https://smms.app  → 获取 Token"
-      echo "   │   配置：选 smms，填入 Token"
-      echo "   │"
-      echo "   ├─ 腾讯云 COS"
-      echo "   │   需要：SecretId、SecretKey、Bucket 名、Region（如 ap-nanjing）"
-      echo "   │"
-      echo "   └─ 阿里云 OSS"
-      echo "       需要：accessKeyId、accessKeySecret、bucket、区域"
       echo ""
       echo "   配置完成后测试上传（用任意图片）："
       echo "   picgo upload /path/to/test.png"
@@ -343,7 +394,7 @@ run_generate() {
 
   # 上传
   info "正在上传到图床..."
-  local upload_out; upload_out=$("$picgo_bin" "$OUT_PATH" 2>&1 || true)
+  local upload_out; upload_out=$("$picgo_bin" upload "$OUT_PATH" 2>&1 || true)
   local url; url=$(echo "$upload_out" | grep -E '^https?://' | head -1 | tr -d '[:space:]' || true)
 
   if [[ -n "$url" ]]; then
