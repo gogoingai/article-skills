@@ -2,6 +2,33 @@
 
 本文件记录仓库里所有技能的重大变更，按发布时间倒序排列。
 
+## 3.1.0 — article-image 新增两套手绘风格，拆分 diagram-style.md 对齐 agentskills.io 规范
+
+新增两套风格参考库（用户提供 Excalidraw 白板截图和马克笔手绘截图作为风格锚点，逐张用 gpt-image-2 生成验证后收入库）：
+
+- **`excalidraw` 风格**：斜线交叉排线填充 + 潦草描边 + 手写字体，工程草图感，无插画图标——与已有的可爱插画风手绘风格明确区分开。7 张参考图覆盖线性流程、嵌套分组、高密度分层架构、时序图、分支决策、对比图、时间演化图。
+- **`mono-marker` 风格**：全图单一主色调 + 奶油色背景 + 波浪线引出旁注，视觉上像马克笔手绘。4 张参考图覆盖分组流程、判断分支合并、分层架构、左右对比。过程中定位到一个可复现的生图踩坑并写进 `references/pitfalls.md`：并列分支之间容易被模型误画出多余连接线，必须同时声明"间距拉大"和"禁止连接"两句，只写一句仍会复发。
+
+**`references/diagram-style.md`（原 1166 行）整体拆分**，对齐 agentskills.io 规范里的三条硬性要求（SKILL.md body 建议 <500 行；reference 文件应聚焦单一关注点、按需加载；文件引用尽量控制在一跳之内，避免链式嵌套）：
+
+- 4 套风格库单独成文件：`references/styles/{handdrawn,excalidraw,mono-marker,techppt}.md`
+- 13 种图类型模板按结构相似性分 4 组：`references/templates/{architecture,flow,comparison,data-viz}.md`
+- 其余按关注点拆分：`core-principles.md`（核心原则+禁用泳道图+节点标签规则）、`pitfalls.md`（常见踩坑）、`design-principles.md`（设计四大原则与配色）、`diagram-type-selector.md`（该画哪类图选型指南）
+- 删除原 `diagram-style.md`，`SKILL.md` 精简到 93 行，直接扁平链接到以上所有文件
+- 拆分后同步修正了所有文件内部残留的旧编号标题（如"一、核心原则""3.1 横向多层架构图"）和跨文件引用——这些编号在原来的单文件语境下才有意义，直接照搬到独立文件里毫无意义
+
+## 3.0.0 — 新增 article-translate，第四个技能
+
+之前 `article-write` 里有一份从外部 `baoyu-translate` 技能整段拷贝但已经损坏（引用不存在的脚本路径）的 `baoyu-translate.md`，且没有任何流程真正调用它。按"用户会不会脱离主流程单独触发"的标准判断，翻译本身够格独立成第四个技能：
+
+- **新增 `article-translate`**：`references/translation-guide.md` 是自包含的翻译方法论（分析领域/语气/术语 → 翻译 → 自查），学习自 baoyu-translate 的核心原则和 refined 模式的分析步骤，专注单篇文章量级的翻译质量。分块翻译、多模式切换、EXTEND.md 配置等工程基础设施**不重新实现**——评估过全量 vendor 进来的维护成本（baoyu-translate 还在活跃更新，vendor 一份等于冻结在某个版本，且引入 bun/npm 运行时依赖）不划算，改为明确的"重活升级路径"：源文档超过约 4000 词、要精翻多篇、需要分块并行翻译时，建议用户另装 `jimliu/baoyu-skills` 的 baoyu-translate（可选依赖，不影响本技能覆盖的日常场景）
+- **注解密度跟着读者画像走**：不引入 baoyu-translate 的 style/audience 独立预设枚举（避免和 article-write 已有的读者画像系统打架），改为直接复用读者画像里的技术背景字段决定术语注解密度
+- **强制实时审查**：article-translate 翻译完成后当场（不等全文写完）调用 article-review 的 R2 做翻译腔审查，不是可选的收尾步骤——Claude 系模型生成中文容易有翻译腔，尤其是刚读完英文源码/文档之后，翻译者自己很难发现自己写出来的问题
+- `article-write` 的 Step 2（获取素材）源材料是英文时，改为用 `Skill` 工具调用 article-translate，不再直接引用（已删除的）`baoyu-translate.md`
+- `article-review` 的 R2 交叉引用从 article-write 改指向 article-translate
+
+**同一版本里顺带解决的另一个外部依赖**：`article-image` 之前依赖单独安装的 `gpt-image-2` skill 才能真正生成图片。`gen.sh`/`extract_image.py` 本身很小、无隐藏依赖，且 gpt-image-2 声明 MIT 协议，直接 vendor 进 `article-image/scripts/`（新增 `gpt-image-2-gen.sh`、`extract_image.py`、`THIRD_PARTY_NOTICES.md`），不再需要单独安装该 skill。唯一剩下的外部依赖是 `codex` CLI 本身——这是真正意义上"没法吸收"的第三方工具，不是可以复制内容进来的技能。
+
 ## 2.3.0 — 跨技能引用改用 ~/.agents/skills，声明 Claude 专属工具的等价退化
 
 `npx skills` 把技能装到 72+ 种 agent，但仓库里所有跨技能引用（`--ref` 图片路径、Read 规则文件路径、`gen.sh` 查找逻辑）之前写的都是 `~/.claude/skills/...`——这个路径只在装了 Claude Code 时才存在，装到其他 agent 时找不到文件。

@@ -4,8 +4,9 @@
 
 | 技能 | 作用 |
 | --- | --- |
-| [`article-write`](article-write/) | 中文技术文章写作主流程：规划（问卷+骨架）、逐节写作，调用下面两个技能完成配图和审查 |
-| [`article-image`](article-image/) | 为文章生成 AI 配图：画图提示写作规范 + gpt-image-2 生成/质检/上传流程 |
+| [`article-write`](article-write/) | 中文技术文章写作主流程：规划（问卷+骨架）、逐节写作，调用其他三个技能完成翻译、配图和审查 |
+| [`article-translate`](article-translate/) | 英文材料翻译成中文：分析→翻译→自查方法论，翻译完成后当场触发 article-review 的 R2 |
+| [`article-image`](article-image/) | 为文章生成 AI 配图：画图提示写作规范 + 生图/质检/上传流程（生图脚本已 vendored，只需 codex CLI） |
 | [`article-review`](article-review/) | 审查中文技术文章：真实性核查、连贯性、英文术语、翻译腔、AI 写作痕迹、结构自检 |
 
 ## 安装
@@ -19,13 +20,15 @@ npx skills add gogoingai/article-skills --all -g
 - `--all` = `--skill '*' --agent '*' -y`（装全部技能、装到检测到的所有 agent、跳过确认）
 - `-g` = 装到用户全局目录（`~/.agents/skills/` + 各 agent 的技能目录），不加则装到当前项目
 
-**`article-image` 额外依赖 `gpt-image-2`（必装，不会自动带上）**：`npx skills` 不支持"技能依赖技能"，装 article-skills 不会连带装 gpt-image-2。不装的话 article-image 能正常写画图提示，但真正调用生成图片这一步会失败（有兜底：打印安装指引、不报错崩溃、文章不受影响）。想用生成功能就提前装：
+**`article-image` 唯一的外部依赖是 `codex` CLI**（驱动 GPT Image 2 实际生图，需要 ChatGPT Plus/Pro 订阅并 `codex login`）——生图脚本本身已经 vendor 进仓库（`article-image/scripts/gpt-image-2-gen.sh`，MIT 协议，见该目录下 `THIRD_PARTY_NOTICES.md`），不需要单独装 gpt-image-2 skill。
+
+**`article-translate` 日常场景零依赖，重活场景可选依赖 `baoyu-translate`**：翻译单篇文章素材不需要装任何东西；要翻译长文档（超过约 4000 词）、多篇文章、或需要分块并行翻译时，建议另装更完整的翻译工具：
 
 ```bash
-npx skills add agentspace-so/agent-skills --skill gpt-image-2 -g
+npx skills add jimliu/baoyu-skills --skill baoyu-translate -g
 ```
 
-**开发这几个技能时的注意事项**：`npx skills add` 会把技能内容拉取一份独立快照放到 `~/.agents/skills/<name>`，**不是** symlink 回这个 git 仓库。所以改完 `article-write` / `article-image` / `article-review` 里的任何文件后，要：
+**开发这几个技能时的注意事项**：`npx skills add` 会把技能内容拉取一份独立快照放到 `~/.agents/skills/<name>`，**不是** symlink 回这个 git 仓库。所以改完 `article-write` / `article-image` / `article-review` / `article-translate` 里的任何文件后，要：
 
 ```bash
 git push                      # 先推到 GitHub

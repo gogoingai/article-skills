@@ -7,11 +7,15 @@
 #   bash gen-image.sh --prompt "..." --out /tmp/x.png --upload  # 生成并上传图床
 #
 # 依赖：
-#   1. codex CLI          — 驱动 GPT Image 2 生成图片
-#   2. gpt-image-2 skill  — gen.sh 生成脚本（由 codex 调用）
-#   3. picgo              — 上传图床（可选；缺失时图片存本地）
+#   1. codex CLI  — 驱动 GPT Image 2 生成图片（唯一的外部工具依赖）
+#   2. picgo      — 上传图床（可选；缺失时图片存本地）
+#
+# gpt-image-2-gen.sh / extract_image.py 已随本仓库一起分发（vendored，见
+# THIRD_PARTY_NOTICES.md），不需要单独安装 gpt-image-2 skill。
 
 set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # ── 终端颜色 ───────────────────────────────────────────────────────────────────
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; BLUE='\033[0;34m'; NC='\033[0m'
@@ -57,12 +61,8 @@ find_codex() {
 }
 
 find_gen_sh() {
-  local candidates=(
-    "$HOME/.agents/skills/gpt-image-2/scripts/gen.sh"
-  )
-  for p in "${candidates[@]}"; do
-    [[ -f "$p" ]] && echo "$p" && return
-  done
+  local vendored="$SCRIPT_DIR/gpt-image-2-gen.sh"
+  [[ -f "$vendored" ]] && echo "$vendored"
 }
 
 find_picgo() {
@@ -236,19 +236,17 @@ run_check() {
     echo "   ⚠️  需要 ChatGPT Plus 或 Pro 订阅才能使用图片生成功能"
   fi
 
-  # ── 2. gpt-image-2 skill ──
-  step "检测 gpt-image-2 skill（图片生成脚本）"
+  # ── 2. 生图脚本（已随本仓库分发，理论上不该缺失）──
+  step "检测生图脚本（vendored，随 article-image 一起分发）"
   local gen_sh; gen_sh=$(find_gen_sh)
   if [[ -n "$gen_sh" ]]; then
-    ok "gpt-image-2 skill 已安装：$gen_sh"
+    ok "生图脚本就绪：$gen_sh"
   else
     all_ok=false
-    err "gpt-image-2 skill 未安装"
+    err "找不到 $SCRIPT_DIR/gpt-image-2-gen.sh"
     echo ""
-    echo "   安装方法（在终端运行）："
-    echo "   npx skills add https://github.com/agentspace-so/agent-skills --skill gpt-image-2"
-    echo ""
-    echo "   安装完成后重新运行：bash scripts/gen-image.sh --check"
+    echo "   这个文件应该和 gen-image.sh 一起装好，缺失说明 article-image 技能安装不完整，"
+    echo "   重新跑一次 npx skills add/update 装回来。"
   fi
 
   # ── 3. picgo（上传图床）──
@@ -335,10 +333,10 @@ run_generate() {
     exit 3
   fi
 
-  # 检查 gen.sh
+  # 检查生图脚本（vendored，理论上不该缺失）
   local gen_sh; gen_sh=$(find_gen_sh)
   if [[ -z "$gen_sh" ]]; then
-    err "gpt-image-2 skill 未安装，无法生成图片"
+    err "找不到 $SCRIPT_DIR/gpt-image-2-gen.sh，article-image 技能安装不完整"
     echo "请先运行：bash scripts/gen-image.sh --check"
     exit 3
   fi

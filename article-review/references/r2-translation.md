@@ -1,6 +1,6 @@
 # R2：翻译腔审查
 
-下方标准已完整独立可用。与 `article-write` 的 `references/language/translation-guide.md`（Step 2 翻译英文素材时用）是同一套判断标准的两个使用时机：那份是翻译时的自查清单，这份是翻译/成文后的独立审查，两者不重复执行同一步骤但共享标准。
+下方标准已完整独立可用。与 **article-translate** 的 `references/translation-guide.md`（翻译时用）是同一套判断标准的两个使用时机：那份是翻译时的自查清单，这份是翻译完成后**当场**（article-translate 强制触发，不等全文写完）的独立审查，两者不重复执行同一步骤但共享标准。
 
 ## 执行步骤
 

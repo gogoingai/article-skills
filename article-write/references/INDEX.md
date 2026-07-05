@@ -10,6 +10,8 @@
 > **配图**已拆分为独立技能 **article-image**（写画图提示、调用 gpt-image-2 生成、质检、上传、写入文章）。本技能的写作阶段只插入占位标记 `> 🖼️ 待配图：[描述]`，全文定稿后用 `Skill` 工具调用 article-image 统一处理，见 `SKILL.md` Step 5。
 >
 > **审查**（R0~R5）已拆分为独立技能 **article-review**。用户独立触发"审查"时用 `Skill` 工具调用它；写作/修改过程中反复用到的 R0~R4，直接 Read 它的 `references/` 文件内联执行，不发起 `Skill` 调用，见 `SKILL.md`「审查」一节。
+>
+> **翻译**（英文素材转中文）已拆分为独立技能 **article-translate**。Step 2 素材是英文时用 `Skill` 工具调用它，它会自己当场触发 article-review 的 R2 审查，本技能不用重复触发。
 
 ---
 
@@ -29,7 +31,6 @@
 |------|------|
 | `style-guide.md` | 完整写作风格规范（行文、结构、语言，含 Hard Gates） |
 | `anti-patterns.md` | 禁止事项清单（35 条），含定稿自检清单 |
-| `language/translation-guide.md` | 英文素材翻译原则（Step 2 素材是英文时使用），自包含不依赖外部技能 |
 
 ---
 

@@ -27,21 +27,44 @@ description: 为文章生成 AI 配图（架构图、流程图、技术示意图
 | 用户直接说"画个XX图"、"生成配图"，给出内容描述 | 直接进入「写画图提示」 |
 | 文章里已有 `> 🖼️ 待配图` 占位标记 | 先转换成完整画图提示，见 `references/gen-workflow.md` 第二步 |
 | 用户说"生成图片"、"渲染一下"、"把图画出来" | → 查 `references/gen-workflow.md`，完整生成流程 |
-| 用户提到"手绘风格"、"技术PPT风格"等风格关键词 | → 查 `references/diagram-style.md` §零 |
+| 用户提到"手绘风格""Excalidraw""马克笔风格""技术PPT风格"等风格关键词 | → 直接跳对应的 `references/styles/*.md`（见下方风格库表） |
 
 ---
 
 ## 写画图提示
 
-→ 查 `references/diagram-style.md`（核心规范：13 种图类型模板、禁用泳道图、节点标签规则、设计四大原则与配色、该画哪类架构图、常见踩坑、手绘/技术PPT风格库）
-
-→ 完整示例参考 `references/diagram-examples.md`
-
-核心原则（详见 `diagram-style.md` §一）：
+核心原则（4 条，展开说明见 `references/core-principles.md`）：
 1. 描述视觉物体，不指定显示文字——prompt 触发元素，不指定渲染细节
 2. 不写 px/尺寸/颜色值/字号——生图模型自行决定渲染细节
 3. 图类型、节点标签、箭头语义、关键数据、视觉层次是该写的内容
 4. 禁止任何画图 DSL（Mermaid、draw.io、Graphviz、PlantUML）——只输出 `# 画图提示` 代码块
+
+先判断该画哪类图 → `references/diagram-type-selector.md`（图类型快速选表 + 该画哪类架构图），再去对应的图型模板文件取 prompt 骨架：
+
+| 图型模板文件 | 覆盖的图类型 |
+| --- | --- |
+| `references/templates/architecture.md` | 横向多层架构图、树形层次检索路径图 |
+| `references/templates/flow.md` | 竖向三阶段流程、竖向分支流程、横向阶段列流程、两层流程（主流程+展开细节） |
+| `references/templates/comparison.md` | 并排方案对比、并行双路流程、左右结果对比 |
+| `references/templates/data-viz.md` | 横向条形图、公式+分级卡片、时间演化折线图、金字塔分层图 |
+
+风格库（手绘插画 / Excalidraw / 单色马克笔 / 技术PPT 四选一，不混用）：
+
+| 风格 | 文档 | 参考图目录 |
+| --- | --- | --- |
+| 手绘插画 | `references/styles/handdrawn.md` | `assets/styles/handdrawn/` |
+| Excalidraw（白板斜线填充） | `references/styles/excalidraw.md` | `assets/styles/excalidraw/` |
+| 单色马克笔（波浪线注释） | `references/styles/mono-marker.md` | `assets/styles/mono-marker/` |
+| 技术PPT（机器人吉祥物） | `references/styles/techppt.md` | `assets/styles/techppt/` |
+| （无风格关键词/默认） | 极简专业 PPT 风格，直接在图型模板结尾加「风格：白色背景，高级技术 PPT 配图，极简专业，文字标注全部用中文。」 | — |
+
+其他参考文档：
+
+| 文档 | 内容 |
+| --- | --- |
+| `references/pitfalls.md` | 常见踩坑教训（跨风格通用） |
+| `references/design-principles.md` | 设计四大原则与配色审美 |
+| `references/diagram-examples.md` | 完整示例 |
 
 ---
 
@@ -55,12 +78,17 @@ description: 为文章生成 AI 配图（架构图、流程图、技术示意图
 
 ## 依赖
 
-- 生图脚本：`~/.agents/skills/gpt-image-2/scripts/gen.sh`（需已安装 gpt-image-2 skill）
+- **codex CLI**（唯一的外部工具依赖，需要 ChatGPT Plus/Pro 订阅并 `codex login`）：驱动 GPT Image 2 实际生图
+- 生图脚本：`scripts/gpt-image-2-gen.sh` + `scripts/extract_image.py`——已随本技能一起分发（vendored，MIT，见 `scripts/THIRD_PARTY_NOTICES.md`），**不需要单独安装 gpt-image-2 skill**
 - 图床：`picgo`（需已配置 uploader）
-- 风格参考图库：`assets/styles/`（`handdrawn/` 手绘插画、`techppt/` 技术PPT风格，配合 `--ref` 使用）
+- 风格参考图库：`assets/styles/`（`handdrawn/` 手绘插画、`excalidraw/` 白板斜线填充、`mono-marker/` 单色马克笔、`techppt/` 技术PPT风格，配合 `--ref` 使用，对应文档见 `references/styles/`）
 
 ---
 
 ## 技能自我进化
 
-遇到新的画图踩坑（生成结果反复出现的结构/文字/配色问题），在解决后更新 `references/diagram-style.md`「常见踩坑」一节，不要只在当次会话里口头记住。
+遇到新的画图踩坑（生成结果反复出现的结构/文字/配色问题），在解决后更新对应文档，不要只在当次会话里口头记住：
+
+- 跨风格通用踩坑（任意风格都会遇到，如断线、乱连线、留白失衡）→ `references/pitfalls.md`
+- 某个风格特有的踩坑 → 该风格自己的 `references/styles/*.md` 文件
+- 某个图型模板特有的踩坑 → 该模板所在的 `references/templates/*.md` 文件
