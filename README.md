@@ -1,6 +1,6 @@
 # skills
 
-一套写作辅助技能集合，供 Claude Code 使用。
+一套写作辅助技能集合，主要面向 Claude Code，也可通过 `npx skills` 装到其他 agent。
 
 | 技能 | 作用 |
 | --- | --- |
@@ -27,5 +27,11 @@ npx skills update             # 再拉取最新版本同步到本地技能目录
 ```
 
 只改本仓库文件、不 push、不 update，改动不会在 Claude Code 里生效。
+
+## 开发约定
+
+**跨技能引用一律用 `~/.agents/skills/<name>/...`，禁止写 `~/.claude/skills/<name>/...`。** `~/.agents/skills/` 是 `npx skills` 每次安装都会建的 canonical 位置；`~/.claude/skills/` 只是装了 Claude Code 时才会有的派生 symlink，其他 agent 上不存在。写 `.claude` 路径会导致装到非 Claude agent 时找不到文件。
+
+技能内容里出现的 `AskUserQuestion`、`TaskCreate`、`Skill` 工具是 Claude Code 专属工具名，其他 agent 没有时按各 SKILL.md 顶部的"工具等价说明"退化执行，不强行假设所有 agent 都有这些工具。
 
 版本记录见 [CHANGELOG.md](CHANGELOG.md)。

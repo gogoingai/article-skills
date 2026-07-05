@@ -59,9 +59,6 @@ find_codex() {
 find_gen_sh() {
   local candidates=(
     "$HOME/.agents/skills/gpt-image-2/scripts/gen.sh"
-    "$HOME/.claude/skills/gpt-image-2/scripts/gen.sh"
-    ".claude/skills/gpt-image-2/scripts/gen.sh"
-    "$HOME/.config/claude/skills/gpt-image-2/scripts/gen.sh"
   )
   for p in "${candidates[@]}"; do
     [[ -f "$p" ]] && echo "$p" && return

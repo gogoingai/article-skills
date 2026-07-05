@@ -2,6 +2,15 @@
 
 本文件记录仓库里所有技能的重大变更，按发布时间倒序排列。
 
+## 2.3.0 — 跨技能引用改用 ~/.agents/skills，声明 Claude 专属工具的等价退化
+
+`npx skills` 把技能装到 72+ 种 agent，但仓库里所有跨技能引用（`--ref` 图片路径、Read 规则文件路径、`gen.sh` 查找逻辑）之前写的都是 `~/.claude/skills/...`——这个路径只在装了 Claude Code 时才存在，装到其他 agent 时找不到文件。
+
+- 全部改成 `~/.agents/skills/<name>/...`——这是 `npx skills` 每次安装都保证会建的 canonical 位置，不依赖具体装了哪个 agent
+- `gen-image.sh` 的 `find_gen_sh()` 简化为只查 `~/.agents/skills/gpt-image-2/...`，去掉不再需要的 `.claude`/`.config` 候选路径
+- 三个 SKILL.md 各加一段"工具等价说明"：`AskUserQuestion`/`TaskCreate`/`Skill` 是 Claude Code 专属工具名，装到没有这些工具的 agent 上时按声明的等价方式退化（编号文本问答 / TODO 清单 / 直接 Read 内联执行），不假装所有 agent 都有这些工具
+- README 新增"开发约定"一节，把"跨技能引用只用 `~/.agents/skills/`"定为硬性规则，防止以后又写回 `.claude`
+
 ## 2.2.0 — 安装方式改用 npx skills，移除 setup.sh
 
 改用通用技能安装器 [`npx skills`](https://github.com/vercel-labs/skills)（`npx skills add gogoingai/article-skills --all -g`）作为唯一安装方式，移除仓库自带的 `setup.sh`。
