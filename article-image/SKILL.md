@@ -53,7 +53,7 @@ description: 为文章生成 AI 配图（架构图、流程图、技术示意图
 
 ## 依赖
 
-- 生图脚本：`~/.claude/skills/gpt-image-2/scripts/gen.sh`（需已安装 gpt-image-2 skill）
+- 生图脚本：`~/.agents/skills/gpt-image-2/scripts/gen.sh`（需已安装 gpt-image-2 skill）
 - 图床：`picgo`（需已配置 uploader）
 - 风格参考图库：`assets/styles/`（`handdrawn/` 手绘插画、`techppt/` 技术PPT风格，配合 `--ref` 使用）
 

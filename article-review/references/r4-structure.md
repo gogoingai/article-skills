@@ -2,7 +2,7 @@
 
 **默认跳过**。用户说"顺便看看结构"或"完整审查"时才执行。
 
-下方清单已完整独立可用。另见（可选，非依赖）：`~/.claude/skills/article-write/references/writing/anti-patterns.md`（写作阶段的禁止事项清单，视角有重叠）
+下方清单已完整独立可用。另见（可选，非依赖）：`~/.agents/skills/article-write/references/writing/anti-patterns.md`（写作阶段的禁止事项清单，视角有重叠）
 
 对照以下清单逐项检查，发现问题报告行号和改法建议。
 

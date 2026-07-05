@@ -21,7 +21,7 @@
 **① `--ref` 优先**：传入参考图锚定视觉风格（有机线条、水彩填色感），仅靠 prompt 描述无法稳定复现。推荐参考图：
 
 ```
---ref ~/.claude/skills/article-image/assets/styles/handdrawn/handdrawn-01-skill-creation-loop.png
+--ref ~/.agents/skills/article-image/assets/styles/handdrawn/handdrawn-01-skill-creation-loop.png
 ```
 
 （也可换 `handdrawn-02` 至 `handdrawn-05`，选和目标图类型最接近的）
@@ -36,9 +36,9 @@
 
 ```bash
 RAND=$(openssl rand -hex 4)
-bash ~/.claude/skills/gpt-image-2/scripts/gen.sh \
+bash ~/.agents/skills/gpt-image-2/scripts/gen.sh \
   --prompt "手绘插画风格，有机线条感，水彩填色质感，背景纯白。[图内容描述...]" \
-  --ref ~/.claude/skills/article-image/assets/styles/handdrawn/handdrawn-01-skill-creation-loop.png \
+  --ref ~/.agents/skills/article-image/assets/styles/handdrawn/handdrawn-01-skill-creation-loop.png \
   --out /tmp/zh-tech-img-${RAND}.png \
   --timeout-sec 300
 ```
@@ -802,10 +802,10 @@ LLM 调用                      「是否超过最大轮次？」
 **① --ref 优先**，推荐参考图（按目标图类型选最接近的）：
 
 ```
---ref ~/.claude/skills/article-image/assets/styles/techppt/techppt-03-building.png   # 两列对比、分层
---ref ~/.claude/skills/article-image/assets/styles/techppt/techppt-04-circular.png   # 环形循环
---ref ~/.claude/skills/article-image/assets/styles/techppt/techppt-01-formula.png    # 公式拆解
---ref ~/.claude/skills/article-image/assets/styles/techppt/techppt-02-two-column.png # 双框对比
+--ref ~/.agents/skills/article-image/assets/styles/techppt/techppt-03-building.png   # 两列对比、分层
+--ref ~/.agents/skills/article-image/assets/styles/techppt/techppt-04-circular.png   # 环形循环
+--ref ~/.agents/skills/article-image/assets/styles/techppt/techppt-01-formula.png    # 公式拆解
+--ref ~/.agents/skills/article-image/assets/styles/techppt/techppt-02-two-column.png # 双框对比
 ```
 
 **② prompt 风格描述不可省略**，开头必须加：
@@ -957,13 +957,13 @@ LLM 调用                      「是否超过最大轮次？」
 **① --ref 优先**，推荐参考图（按目标图类型选最接近的）：
 
 ```
---ref ~/.claude/skills/article-image/assets/styles/excalidraw/excalidraw-03-dense-layered-arch.png       # 多层嵌套架构，信息密度高
---ref ~/.claude/skills/article-image/assets/styles/excalidraw/excalidraw-02-nested-groups.png            # 简单嵌套分组
---ref ~/.claude/skills/article-image/assets/styles/excalidraw/excalidraw-01-linear-flow.png              # 横向线性流程
---ref ~/.claude/skills/article-image/assets/styles/excalidraw/excalidraw-04-sequence-race-condition.png  # 时序图/生命线
---ref ~/.claude/skills/article-image/assets/styles/excalidraw/excalidraw-05-branch-decision-flow.png     # 竖向分支决策流程
---ref ~/.claude/skills/article-image/assets/styles/excalidraw/excalidraw-06-side-by-side-comparison.png  # 左右对比图
---ref ~/.claude/skills/article-image/assets/styles/excalidraw/excalidraw-07-timeline-evolution.png       # 时间演化/版本迭代图
+--ref ~/.agents/skills/article-image/assets/styles/excalidraw/excalidraw-03-dense-layered-arch.png       # 多层嵌套架构，信息密度高
+--ref ~/.agents/skills/article-image/assets/styles/excalidraw/excalidraw-02-nested-groups.png            # 简单嵌套分组
+--ref ~/.agents/skills/article-image/assets/styles/excalidraw/excalidraw-01-linear-flow.png              # 横向线性流程
+--ref ~/.agents/skills/article-image/assets/styles/excalidraw/excalidraw-04-sequence-race-condition.png  # 时序图/生命线
+--ref ~/.agents/skills/article-image/assets/styles/excalidraw/excalidraw-05-branch-decision-flow.png     # 竖向分支决策流程
+--ref ~/.agents/skills/article-image/assets/styles/excalidraw/excalidraw-06-side-by-side-comparison.png  # 左右对比图
+--ref ~/.agents/skills/article-image/assets/styles/excalidraw/excalidraw-07-timeline-evolution.png       # 时间演化/版本迭代图
 ```
 
 **② prompt 风格描述不可省略**，开头必须加：
@@ -1097,7 +1097,10 @@ Excalidraw 风格技术示意图，白色背景，横向宽屏构图。潦草粗
 **① --ref 必须**：这套风格的"波浪线注释"「同色系分组框」等细节仅靠文字描述很难稳定复现，务必传参考图：
 
 ```
---ref ~/.claude/skills/article-image/assets/styles/mono-marker/mono-marker-01-gateway-flow.png
+--ref ~/.agents/skills/article-image/assets/styles/mono-marker/mono-marker-01-gateway-flow.png          # 竖向分组流程
+--ref ~/.agents/skills/article-image/assets/styles/mono-marker/mono-marker-02-branch-decision.png       # 含判断菱形的分支合并
+--ref ~/.agents/skills/article-image/assets/styles/mono-marker/mono-marker-03-layered-arch.png          # 多层横向分层架构
+--ref ~/.agents/skills/article-image/assets/styles/mono-marker/mono-marker-04-sync-async-comparison.png # 左右并排对比
 ```
 
 **② prompt 风格描述**，开头必须加：
@@ -1113,6 +1116,9 @@ Excalidraw 风格技术示意图，白色背景，横向宽屏构图。潦草粗
 | 文件 | 图类型 | 特点 |
 | --- | --- | --- |
 | `mono-marker-01-gateway-flow.png` | 竖向分组流程图 | 顶部入口→网关层分组框（三步骤串联）→底部三路分发，右侧波浪线引出每步说明，蓝色单色调 |
+| `mono-marker-02-branch-decision.png` | 含判断菱形的分支流程 | 判断菱形分两路→各自波浪线注释→向下汇合进入分组框，橙色单色调 |
+| `mono-marker-03-layered-arch.png` | 三层横向分层架构 | 接入层/应用层/数据层三个分组框纵向堆叠，层内节点横向排列，层间箭头相连，紫色单色调 |
+| `mono-marker-04-sync-async-comparison.png` | 左右并排对比 | 同步调用 vs 异步调用两个分组框并排，异步侧用虚线箭头表示延迟，底部波浪线引出结论，红色单色调 |
 
 ### Prompt 模板片段
 

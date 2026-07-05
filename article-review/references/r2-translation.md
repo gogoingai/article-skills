@@ -1,6 +1,6 @@
 # R2：翻译腔审查
 
-下方标准已完整独立可用。另见（可选，非依赖）：`~/.claude/skills/article-write/references/language/baoyu-translate.md` refined 模式 Step 4（critique）的诊断标准，视角有重叠
+下方标准已完整独立可用。另见（可选，非依赖）：`~/.agents/skills/article-write/references/language/baoyu-translate.md` refined 模式 Step 4（critique）的诊断标准，视角有重叠
 
 ## 执行步骤
 
