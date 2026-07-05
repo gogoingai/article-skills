@@ -19,6 +19,12 @@ npx skills add gogoingai/article-skills --all -g
 - `--all` = `--skill '*' --agent '*' -y`（装全部技能、装到检测到的所有 agent、跳过确认）
 - `-g` = 装到用户全局目录（`~/.agents/skills/` + 各 agent 的技能目录），不加则装到当前项目
 
+**`article-image` 额外依赖 `gpt-image-2`（必装，不会自动带上）**：`npx skills` 不支持"技能依赖技能"，装 article-skills 不会连带装 gpt-image-2。不装的话 article-image 能正常写画图提示，但真正调用生成图片这一步会失败（有兜底：打印安装指引、不报错崩溃、文章不受影响）。想用生成功能就提前装：
+
+```bash
+npx skills add agentspace-so/agent-skills --skill gpt-image-2 -g
+```
+
 **开发这几个技能时的注意事项**：`npx skills add` 会把技能内容拉取一份独立快照放到 `~/.agents/skills/<name>`，**不是** symlink 回这个 git 仓库。所以改完 `article-write` / `article-image` / `article-review` 里的任何文件后，要：
 
 ```bash

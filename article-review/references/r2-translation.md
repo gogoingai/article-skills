@@ -1,6 +1,6 @@
 # R2：翻译腔审查
 
-下方标准已完整独立可用。另见（可选，非依赖）：`~/.agents/skills/article-write/references/language/baoyu-translate.md` refined 模式 Step 4（critique）的诊断标准，视角有重叠
+下方标准已完整独立可用。与 `article-write` 的 `references/language/translation-guide.md`（Step 2 翻译英文素材时用）是同一套判断标准的两个使用时机：那份是翻译时的自查清单，这份是翻译/成文后的独立审查，两者不重复执行同一步骤但共享标准。
 
 ## 执行步骤
 

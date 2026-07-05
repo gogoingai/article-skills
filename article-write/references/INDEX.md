@@ -29,14 +29,7 @@
 |------|------|
 | `style-guide.md` | 完整写作风格规范（行文、结构、语言，含 Hard Gates） |
 | `anti-patterns.md` | 禁止事项清单（35 条），含定稿自检清单 |
-
----
-
-## references/language/ — 语言规范
-
-| 文件 | 内容 |
-|------|------|
-| `baoyu-translate.md` | 翻译工作流（quick / normal / refined 三种模式） |
+| `language/translation-guide.md` | 英文素材翻译原则（Step 2 素材是英文时使用），自包含不依赖外部技能 |
 
 ---
 
