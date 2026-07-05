@@ -2,6 +2,14 @@
 
 本文件记录仓库里所有技能的重大变更，按发布时间倒序排列。
 
+## 2.2.0 — 安装方式改用 npx skills，移除 setup.sh
+
+改用通用技能安装器 [`npx skills`](https://github.com/vercel-labs/skills)（`npx skills add justis-xu/skills --all -g`）作为唯一安装方式，移除仓库自带的 `setup.sh`。
+
+- 好处：一条命令装到 72+ 种 agent（不限 Claude Code），有官方的 `update`/`remove`/`list` 生命周期管理
+- 代价：`npx skills add` 把技能内容拉取为独立快照放在 `~/.agents/skills/<name>`，**不再是** symlink 回本仓库——本仓库文件改动后必须 `git push` + `npx skills update` 才会生效，不再是"改完立即生效"
+- README 已更新为新的安装说明和开发时的 push+update 提醒
+
 ## 2.1.0 — article-write 规划流程对齐 gstack spec 的三个纪律
 
 参考 gstack `spec` 技能的五阶段设计（理解动机→划定边界→技术追问→草稿评审→质量门禁），给 `article-write` 的规划阶段（Step 1~3.5）补齐三处此前缺失的纪律：

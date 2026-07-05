@@ -10,11 +10,22 @@
 
 ## 安装
 
+用 [`npx skills`](https://github.com/vercel-labs/skills)（通用技能安装器，不限 Claude Code）一条命令装完：
+
 ```bash
-./setup.sh          # 注册仓库里所有技能
-./setup.sh <name>   # 只注册某一个
+npx skills add justis-xu/skills --all -g
 ```
 
-会在 `~/.agents/skills/` 和 `~/.claude/skills/` 下建 symlink，幂等，不会覆盖已有的非本仓库文件。
+- `--all` = `--skill '*' --agent '*' -y`（装全部技能、装到检测到的所有 agent、跳过确认）
+- `-g` = 装到用户全局目录（`~/.agents/skills/` + 各 agent 的技能目录），不加则装到当前项目
+
+**开发这几个技能时的注意事项**：`npx skills add` 会把技能内容拉取一份独立快照放到 `~/.agents/skills/<name>`，**不是** symlink 回这个 git 仓库。所以改完 `article-write` / `article-image` / `article-review` 里的任何文件后，要：
+
+```bash
+git push                      # 先推到 GitHub
+npx skills update             # 再拉取最新版本同步到本地技能目录
+```
+
+只改本仓库文件、不 push、不 update，改动不会在 Claude Code 里生效。
 
 版本记录见 [CHANGELOG.md](CHANGELOG.md)。
