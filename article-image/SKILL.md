@@ -27,7 +27,7 @@ description: 为文章生成 AI 配图（架构图、流程图、技术示意图
 | 用户直接说"画个XX图"、"生成配图"，给出内容描述 | 直接进入「写画图提示」 |
 | 文章里已有 `> 🖼️ 待配图` 占位标记 | 先转换成完整画图提示，见 `references/gen-workflow.md` 第二步 |
 | 用户说"生成图片"、"渲染一下"、"把图画出来" | → 查 `references/gen-workflow.md`，完整生成流程 |
-| 用户提到"手绘风格""Excalidraw""马克笔风格""水彩涂鸦""奶油描边""思维导图风""技术PPT风格"等风格关键词 | → 直接跳对应的 `references/styles/*.md`（见下方风格库表） |
+| 用户提到"手绘风格""Excalidraw""马克笔风格""水彩涂鸦""奶油描边""思维导图风""彩色铅笔""排线阴影""技术PPT风格"等风格关键词 | → 直接跳对应的 `references/styles/*.md`（见下方风格库表） |
 
 ---
 
@@ -57,6 +57,7 @@ description: 为文章生成 AI 配图（架构图、流程图、技术示意图
 | 单色马克笔（波浪线注释） | `references/styles/mono-marker.md` | `assets/styles/mono-marker/` |
 | 水彩涂鸦（星星火花装饰） | `references/styles/doodle-watercolor.md` | `assets/styles/doodle-watercolor/` |
 | 奶油描边（黑色粗描边思维导图） | `references/styles/cream-outline.md` | `assets/styles/cream-outline/` |
+| 彩色铅笔质感（编号徽章+排线阴影） | `references/styles/pencil-sketch.md` | `assets/styles/pencil-sketch/` |
 | 技术PPT（机器人吉祥物） | `references/styles/techppt.md` | `assets/styles/techppt/` |
 | （无风格关键词/默认） | 极简专业 PPT 风格，直接在图型模板结尾加「风格：白色背景，高级技术 PPT 配图，极简专业，文字标注全部用中文。」 | — |
 
@@ -83,7 +84,7 @@ description: 为文章生成 AI 配图（架构图、流程图、技术示意图
 - **codex CLI**（唯一的外部工具依赖，需要 ChatGPT Plus/Pro 订阅并 `codex login`）：驱动 GPT Image 2 实际生图
 - 生图脚本：`scripts/gpt-image-2-gen.sh` + `scripts/extract_image.py`——已随本技能一起分发（vendored，MIT，见 `scripts/THIRD_PARTY_NOTICES.md`），**不需要单独安装 gpt-image-2 skill**
 - 图床：`picgo`（需已配置 uploader）
-- 风格参考图库：`assets/styles/`（`handdrawn/` 手绘插画、`excalidraw/` 白板斜线填充、`mono-marker/` 单色马克笔、`doodle-watercolor/` 水彩涂鸦、`cream-outline/` 奶油描边思维导图、`techppt/` 技术PPT风格，配合 `--ref` 使用，对应文档见 `references/styles/`）
+- 风格参考图库：`assets/styles/`（`handdrawn/` 手绘插画、`excalidraw/` 白板斜线填充、`mono-marker/` 单色马克笔、`doodle-watercolor/` 水彩涂鸦、`cream-outline/` 奶油描边思维导图、`pencil-sketch/` 彩色铅笔质感、`techppt/` 技术PPT风格，配合 `--ref` 使用，对应文档见 `references/styles/`）
 
 ---
 
