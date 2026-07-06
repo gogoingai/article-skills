@@ -2,6 +2,16 @@
 
 本文件记录仓库里所有技能的重大变更，按发布时间倒序排列。
 
+## 3.6.0 — article-write 单篇 context/skeleton 存储位置改为项目根目录
+
+原先本篇 context/skeleton 存在 `$HOME/.gogoingai/article-write/{项目目录名}/`（项目目录名 = `basename $(pwd)`）。这个方案在一个仓库里装着多篇互不相关文章时（比如一个笔记仓库存了几十篇不同主题的稿子）会出问题：所有文章共用同一个"项目目录名"分桶，context/skeleton 互相覆盖串味，写作历史区分不开。
+
+- 存储位置迁移到**项目根目录**下的 `.article-write/` 子目录（`git rev-parse --show-toplevel`，非 git 仓库则用当前工作目录），类似 Claude Code 把 `.claude/` 放项目根目录的做法
+- 分桶粒度从"项目目录名"改成"**文章文件名**"：`{项目根目录}/.article-write/{文件名}.context.md` / `.skeleton.md`，同一项目下的不同文章不再互相覆盖
+- 从0到1流程 Step 1 新增一步：动笔前必须先确定"这篇文章打算叫什么文件名、存哪个目录"，才能定下 context 路径
+- 新增提示：项目是 git 仓库且未在 `.gitignore` 排除 `.article-write/` 时，写入前应询问用户是否要加这条规则（草稿类本地状态，默认不擅自改 `.gitignore`）
+- `SKILL.md`、`references/planning/questionnaire.md` 中所有旧路径引用同步更新；全局画像路径（`$HOME/.gogoingai/article-write/profile.md`）不变
+
 ## 3.5.0 — article-image 新增彩色铅笔质感风格
 
 用户展示了一套英文技术教程配图（llama.cpp 本地部署教程的四步流程图、笔记本插画构图、GGUF 模型名拆解图），确认风格喜欢后翻译成中文逐张验证，收入第七套风格库：

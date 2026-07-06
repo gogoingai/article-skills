@@ -354,7 +354,9 @@ AskUserQuestion({
 
 ## 写入 context.md
 
-系统专属问卷回答完后，把结果写入 `$HOME/.gogoingai/article-write/{项目目录名}/context.md`（项目目录名 = `basename $(pwd)`；仅包含本篇特有内容，全局画像不重复写入）。
+系统专属问卷回答完后，把结果写入 `{项目根目录}/.article-write/{文件名}.context.md`（项目根目录 = `git rev-parse --show-toplevel`，不是 git 仓库则用当前工作目录；文件名 = 本篇文章的文件名，不含扩展名）。
+
+**context.md 必须自包含**：全局画像当时确认好的内容要**整段拷贝**进下面模板的「读者画像」一节，不是写一句"参见全局画像"就跳过——本篇的写作依据不应该依赖全局画像文件之后还存在、还没被改动。
 
 ```markdown
 # 写作上下文
@@ -374,7 +376,7 @@ AskUserQuestion({
 ## 发布渠道
 [个人博客 / 公司博客 / 团队内部 / newsletter / 演讲稿 / 未定]
 
-## 读者画像（来自全局画像 + 本篇补充）
+## 读者画像（全局画像快照，创建时整段拷贝 + 本篇补充）
 | 维度 | 程度 |
 |------|------|
 | 技术背景 | ... |
@@ -410,11 +412,10 @@ AskUserQuestion({
 ## 后续会话加载与补充提问
 
 再次打开同一篇文章时：
-1. 静默加载全局画像（`$HOME/.gogoingai/article-write/profile.md`，无需提示）
-2. 检查 `$HOME/.gogoingai/article-write/{项目目录名}/context.md` → 有则加载，告知用户「已加载上次对本篇的补充说明」；没有则不提
-3. 检查 `$HOME/.gogoingai/article-write/{项目目录名}/skeleton.md` → 有则静默加载
-4. 全局画像不存在 → 走完整问卷流程
+1. 检查 `{项目根目录}/.article-write/{文件名}.context.md` → **有**则直接加载它（里面已含创建时拷贝的画像快照，不必再去读全局画像文件），告知用户「已加载上次对本篇的补充说明」
+2. 检查 `{项目根目录}/.article-write/{文件名}.skeleton.md` → 有则静默加载
+3. `context.md` **不存在**（本篇是第一次建立）→ 按前面的流程，先加载/建立全局画像，确认后拷贝一份快照写进新建的 context.md
 
 **补充提问**：规划中发现某维度信息不足，只用 `AskUserQuestion` 补问 1~2 题：
 - 属于通用背景（读者习惯、语言偏好）→ 更新全局画像
-- 属于本篇特有（这个系统的模块了解程度）→ 写入 `$HOME/.gogoingai/article-write/{项目目录名}/context.md`
+- 属于本篇特有（这个系统的模块了解程度）→ 写入 `{项目根目录}/.article-write/{文件名}.context.md`
