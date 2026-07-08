@@ -20,6 +20,8 @@ npx skills add gogoingai/article-skills --all -g
 - `--all` = `--skill '*' --agent '*' -y`（装全部技能、装到检测到的所有 agent、跳过确认）
 - `-g` = 装到用户全局目录（`~/.agents/skills/` + 各 agent 的技能目录），不加则装到当前项目
 
+> 如果安装时看到 `eve`/`promptscript does not support global skill installation` 报错，可以忽略——`npx skills` 工具内置的 agent 里只有这两个不支持全局安装（工具自身的限制，与本仓库无关），其余 agent（包括 Claude Code）不受影响，照常装成功。
+
 **`article-image` 唯一的外部依赖是 `codex` CLI**（驱动 GPT Image 2 实际生图，需要 ChatGPT Plus/Pro 订阅并 `codex login`）——生图脚本本身已经 vendor 进仓库（`article-image/scripts/gpt-image-2-gen.sh`，MIT 协议，见该目录下 `THIRD_PARTY_NOTICES.md`），不需要单独装 gpt-image-2 skill。
 
 **`article-translate` 日常场景零依赖，重活场景可选依赖 `baoyu-translate`**：翻译单篇文章素材不需要装任何东西；要翻译长文档（超过约 4000 词）、多篇文章、或需要分块并行翻译时，建议另装更完整的翻译工具：
