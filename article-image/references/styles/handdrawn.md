@@ -35,7 +35,7 @@
 **完整调用示例：**
 
 ```bash
-RAND=$(openssl rand -hex 4)
+RAND=$(openssl rand -hex 8)
 bash ~/.agents/skills/article-image/scripts/gpt-image-2-gen.sh \
   --prompt "参考图风格。[图内容描述...]。所有文字用中文。" \
   --ref ~/.agents/skills/article-image/assets/styles/handdrawn/handdrawn-01-skill-creation-loop.png \
