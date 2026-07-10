@@ -8,6 +8,7 @@
 | [`article-translate`](article-translate/) | 英文材料翻译成中文：分析→翻译→自查方法论，翻译完成后当场触发 article-review 的 R2 |
 | [`article-image`](article-image/) | 为文章生成 AI 配图：画图提示写作规范 + 生图/质检/上传流程（生图脚本已 vendored，只需 codex CLI） |
 | [`article-review`](article-review/) | 审查中文技术文章：真实性核查、连贯性、英文术语、翻译腔、AI 写作痕迹、结构自检 |
+| [`article-publish`](article-publish/) | 生成发布版：清洗画图提示/项目标识，生成标题候选、简介、封面图，产出到独立发布目录，为后续自动发布留扩展点 |
 
 ## 安装
 
